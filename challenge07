@@ -1,0 +1,97 @@
+// Challenge 07: Linked List Deduplication
+//Ana Luisa Lamberto
+
+#include <iostream>
+#include <memory>
+#include <unordered_set>
+using namespace std;
+
+// Structures
+struct List {
+  struct Node{ //Nodes that make up list
+    int value;
+    Node *next;
+    Node(int val, Node *n){
+      value = val;
+      next = n;
+    }
+  };
+
+    Node *head;
+    List() {head = nullptr;} //constructor
+    void delList(Node *node); //decstructor
+    void push_back(int num); //add to back of list
+    void deduplicate(Node *root);
+    void skipNode(Node *node);
+};
+
+// Main Execution
+
+int main(int argc, char *argv[]) {
+    int N, item;
+
+    while(cin >> N){ //take in input
+      List l;
+      for(int i = 0; i < N; i++){
+        cin >> item;
+        l.push_back(item); //add Nodes to list
+      }
+
+      l.deduplicate(l.head); //take out duplicates of lists
+
+      for(auto curr = l.head; curr != nullptr; curr = curr->next){
+        if(curr->next != nullptr)
+          cout << curr->value << " ";
+        else //if last Node print endline
+          cout << curr->value << endl;
+      }
+      l.delList(l.head); //decstruct
+    }
+    return EXIT_SUCCESS;
+}
+
+//Functions
+
+void List::delList(Node *node) { //deconstructor
+  if (!node) { return; }
+  else{
+    delList(node->next);
+    delete(node); //delete individual nodes
+  }
+}
+
+void List::push_back(int num) {
+  Node *result = new Node{num, nullptr}; //make new node
+  if(!head){
+    head = result;
+  }
+  else{
+    Node *n = head;
+    while(n->next != nullptr) //iterate to that part of code and replace
+      n = n->next;
+    n->next = result;
+  }
+}
+
+void List::deduplicate(Node *start){
+  Node *curr = start;
+  Node *before = nullptr;
+  unordered_set<int> set;
+
+  if(!head)
+    return;
+  while(curr != nullptr){
+    if(set.find(curr->value) != set.end()){ //if its not at the end then already exists
+      before->next = curr->next; //remove from list
+      delete(curr); //Node destructor
+    }
+    else{
+      set.insert(curr->value); //if not in - insert
+      before = curr;
+    }
+    curr = before->next; //continue moving through list
+  }
+}
+
+
+// vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:
