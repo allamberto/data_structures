@@ -1,0 +1,77 @@
+// Challenge 09: Graph Paths
+// Ana Luisa Lamberto
+
+#include <set>
+#include <string>
+#include <map>
+#include <stack>
+#include <iostream>
+using namespace std;
+
+// Prototpes & Typedef
+
+//typedef map <string, set<string>> Graph;
+bool traverse(map<string, set<string>> adjList, string source, string destination);
+
+
+// Main Execution
+
+int main(int argc, char *argv[]) {
+  int nedge, npath, numGraph = 1;
+  string edge, source, destination;
+  map<string, int> found;
+  bool flag = true;
+
+  cin >> nedge;// take initial input
+  while(flag){ //keep going until no more input
+    map <string, set<string>> adjList; //adj. list
+    for(int i = 0; i < nedge; i++){
+      string c1, c2;
+      cin >> c1 >> c2;
+      adjList[c1].insert(c2); //create adj. list
+    }
+    cin >> npath;
+    bool state;
+    for(int i = 0; i < npath; i++){ //checks state for each path
+      cin >> source >> destination;
+      state = traverse(adjList, source, destination); //returns state of edge and prints
+      if(state){
+        cout << "In Graph " << numGraph << " there is a path from " << source << " to " << destination << endl;
+      }
+      else{
+        cout << "In Graph " << numGraph << " there is no path from " << source << " to " << destination << endl;
+      }
+    }
+    if(cin >> nedge)
+      cout << endl; //another graph provided
+    else
+      flag = false; //no more input
+    numGraph++; //count number of graphs used
+  }
+
+  return EXIT_SUCCESS;
+}
+
+//Functions
+
+//traversal of graph
+bool traverse(map <string, set<string>> adjList, string source, string destination){
+  stack<string> s;
+  set<string> marked; //each node already visited
+  s.push(source);
+  while(!s.empty()){ //while more nodes not checked
+    source = s.top(); //check top node in stack
+    s.pop();
+    if(marked.find(source) == marked.end()) { //if not marked yet
+      if(adjList[source].find(destination) != adjList[source].end()) {return true;} //check adj. list to see if already true
+      marked.insert(source); //make it true if not
+      for(auto it = adjList[source].begin(); it != adjList[source].end(); it++){ //check all its neighbors in adj. list
+        s.push(*it); //print neighbors
+      }
+    }
+  }
+  return false; //if reaches return failed
+}
+
+
+// vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:
