@@ -1,0 +1,48 @@
+// Challenge 05: BST
+
+#include <iostream>
+#include <cmath>
+#include <vector>
+using namespace std;
+
+//bool isPowerOfTwo(int);
+bool check(vector<int>, size_t, int, int);
+void eraseTree(vector<int>&, int);
+
+// Main Execution
+int main(int argc, char *argv[]) {
+  int N, count = 1, val;
+  vector<int> tree;
+
+  while(cin >> N){ //continuously input data
+    for(int i = 0; i < N; i++){ //input number of nodes
+      cin >> val;
+      tree.push_back(val);
+    }
+
+    int min = -1, max = 100000; //min max initials - will change in check function
+    size_t i = 0;
+    bool result = check(tree, i, min, max); //recursive function
+
+    if(result)
+      cout << "Tree " << count << " is a BST" << endl;
+    else
+      cout << "Tree " << count << " is not a BST" << endl;
+
+    count++; //keep track of number of trees
+    tree.clear(); //clear vector after each interation
+  }
+  return EXIT_SUCCESS;
+}
+
+
+bool check(vector<int> tree, size_t i, int min, int max){
+  if(i >= tree.size()) return true; //check if i is greater than tree size
+  if(tree[i] < 0) return true; //check if node doesn't exit
+  if(tree[i] <= min) return false; //check if node is less than minimum node in tree
+  if(tree[i] > max) return false; //check if node is greater than maximum node tree
+
+  //recursive call for left child and right child
+  return (check(tree, 1 + 2*i, min, tree[i]) && check(tree, 2 + 2*i, tree[i], max)); //both must be true to return true
+}
+// vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:
