@@ -1,0 +1,48 @@
+// Challenge 03: Closest Numbers
+//Ana Luisa Lamberto
+
+#include <algorithm>
+#include <climits>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main(int argc, char *argv[]) {
+    int N, input;
+    vector<int> nums, results;
+
+    while(cin >> N){  //while input is provided
+      for(int i = 0; i < N; i++){
+        cin >> input;
+        nums.push_back(input); //add each input to vector
+      }
+
+      sort(nums.begin(), nums.end()); //sort vector
+
+      int diff = nums[1] - nums[0]; //find first difference and compare rest of vector to that
+
+      for(int i = 0; i < N - 1; i++){
+        if(nums[i + 1] - nums[i] < diff){ //check if two adjacent numbers have a smaller diff
+          diff = nums[i + 1] - nums[i];
+        }
+      }
+
+      for(int i = 0; i < N - 1; i++){
+        if(nums[i + 1] - nums[i] == diff){ //if a diff between two numbers is the smallest diff, add to results
+          results.push_back(nums[i]);
+          results.push_back(nums[i + 1]);
+        }
+      }
+
+      for(size_t i = 0; i < results.size() - 1; i++){ //print results
+          cout << results[i] << " ";
+      }
+      cout << results[results.size() - 1] << endl;
+
+      nums.clear(); //clear for next loop
+      results.clear();
+    }
+    return EXIT_SUCCESS;
+}
