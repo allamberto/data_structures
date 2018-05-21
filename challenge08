@@ -1,0 +1,65 @@
+// Challenge 08: Palindrome Permutation
+// Ana Luisa Lamberto
+
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <string>
+using namespace std;
+
+// Prototypes
+bool is_palindrome(string);
+
+// Main Execution
+
+int main(int argc, char *argv[]) {
+  string phrase;
+  vector<string> phrases;
+
+  //insert strings into a vector
+  while(getline(cin, phrase)){
+    phrases.push_back(phrase);
+  }
+
+  //print based on boolean
+  for(auto it = phrases.begin(); it != phrases.end(); it++){
+      if(is_palindrome(*it))
+        cout << "\"" << *it << "\""<< " is a palindrome permutation" << endl;
+      else
+        cout << "\"" << *it << "\""<< " is not a palindrome permutation" << endl;
+  }
+
+  return EXIT_SUCCESS;
+}
+
+//Functions
+
+bool is_palindrome(string phrase){
+  //erase punctuation and numbers
+  for(size_t i = 0; i < phrase.length(); i++){
+    if(ispunct(phrase[i]) || isdigit(phrase[i]) || isspace(phrase[i])){
+      phrase.erase(phrase.begin() + i);
+      i--;
+    }
+  }
+
+  //initialize map
+  unordered_map<char, int> count;
+  for(int i = 0; i < 255; i++){
+    count[i] = 0;
+  }
+
+  //count frequency of each letter and save in map
+  for(auto it = phrase.begin(); it != phrase.end(); it++) {
+    count[*it]++;
+  }
+
+  //check if palindrome permutation
+  int odds = 0;
+  for(size_t i = 0; i < count.size(); i++) {
+    odds += count[i] % 2;
+  }
+  return odds <= 1;
+}
+
+// vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:
