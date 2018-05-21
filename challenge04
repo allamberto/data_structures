@@ -1,0 +1,108 @@
+// Challenge 04: Card Rank
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+//Struct --------------------------------------------------
+struct Holder{ //struct for each card holder
+    string name;
+    int rank;
+    char suit;
+};
+
+//Prototypes ----------------------------------------------
+
+int rankToNum(string);
+void comp(vector<Holder>&, int, int);
+void swap(vector<Holder>&, int, int);
+void sortHolders(vector<Holder>&, int);
+void eraseHolders(vector<Holder>&, int);
+
+// Main Execution
+
+int main(int argc, char *argv[]) {
+
+//Set Up Variables -----------------------------------------
+  int N, numRank;
+  string nameTemp, rankTemp, suitTemp;
+  vector<Holder> holders;
+  Holder holderTemp;
+
+//Take Input ------------------------------------------------
+  while(cin >> N){ //continuously take input after each sort
+    if(N < 0) //terminate condition
+      break;
+    for(int i = 0; i < N; i++){ //for each number of holders
+      cin >> nameTemp >> rankTemp >> suitTemp;
+      numRank = rankToNum(rankTemp);
+      holderTemp.name = nameTemp;
+      holderTemp.rank = numRank;
+      holderTemp.suit = suitTemp[0];
+      holders.push_back(holderTemp); //add holder w/ all new info to holder list
+    }
+
+    //sort -------------------------------------------------
+
+    sortHolders(holders, N); //custom sort function
+
+    for(int i = 0; i < N - 1; i++){
+      if(holders[i].rank == holders[i + 1].rank) //check if two values are the same after sorting
+        comp(holders, i, i + 1); //check if they should be switched
+    }
+
+    for(int i = 0; i < N - 1; i++){ //print
+      cout << holders[i].name << ", ";
+    }
+    cout << holders[N - 1].name << endl;
+
+    eraseHolders(holders, N);
+  }
+  return EXIT_SUCCESS;
+}
+
+//Functions ------------------------------------------------
+
+int rankToNum(string rank){ //change letter ranks to numbers so they can be sorted
+  if(rank == "J")
+    return 11;
+  else if(rank == "Q")
+    return 12;
+  else if(rank == "K")
+    return 13;
+  else if(rank == "A")
+    return 14;
+  else
+    return stoi(rank);
+}
+
+void comp(vector<Holder> &vector, int indexA, int indexB){
+  if(vector[indexB].suit > vector[indexA].suit){ //check values of chars if ranks are the same
+    swap(vector, indexA, indexB);
+  }
+}
+
+void swap(vector<Holder> &vector, int index1, int index2){ //swap holders in vector
+  Holder temp = vector[index2];
+  vector[index2] = vector[index1];
+  vector[index1] = temp;
+}
+
+void sortHolders(vector<Holder> &vector, int N){ //insertion sort implementation of holders' vector
+  int j;
+  for (int i = 1; i < N; i++){
+    j = i;
+    while((j > 0) && (vector[j].rank > vector[j - 1].rank)){
+      swap(vector, j, j - 1);
+      j-=1;
+    }
+	}
+}
+
+void eraseHolders(vector<Holder> &vector, int N){ //erase everything in holder vector for every new iteration
+  for(int i = 0; i < N; i++){
+    vector.erase(vector.begin() + i);
+  }
+}
