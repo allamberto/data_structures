@@ -1,0 +1,106 @@
+// Challenge 06: Lowest Common Ancestor
+// Ana Luisa Lamberto
+
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int value;
+    Node *left; //left child
+    Node *right; //right child
+};
+
+// Tree declaration ------------------------------------------------------------
+class BST{
+  public:
+
+    typedef Node * iterator;
+    Node *root; //root of tree
+    int size; //size of tree
+    BST(); //constructor
+    ~BST(); //deconstructor
+    void insert(Node *&node, int value); //add Node to tree
+    void print(Node *node); //for debugging - tree traversal
+    void emptyTree(Node *node); //recursive function for deconstructor
+    Node *LCA(Node *node, int anc1, int anc2);
+};
+
+// Tree implementation ---------------------------------------------------------
+BST::BST(){ //constructor
+  size = 0;
+  root = nullptr;
+}
+
+void BST::emptyTree(Node *node){ //recursive function to delete all nodes in a tree
+  if(node){
+    emptyTree(node->left);
+    emptyTree(node->right);
+    delete node;
+  }
+}
+
+BST::~BST() {
+  emptyTree(root); //call delete function
+}
+
+void BST::insert(Node *&node, int value){
+  if(!node){ //base case: if node doesn't exist - make a new one
+    node = new Node{value, nullptr, nullptr};
+  }
+  else if(value <= node->value) //recurse down left child
+    insert(node->left, value);
+  else //recurse down right child
+    insert(node->right, value);
+  size++; //increase tree size
+}
+
+void BST::print(Node *node){ //for debugging
+	if(!node) //base case: end if node doesn't exist
+    return;
+
+	print(node->right); //recurse down right
+	cout << node->value << " "; //print node
+	print(node->left); //recurse down left
+}
+
+Node *BST::LCA(Node *node, int anc1, int anc2){
+  if(!node) //if list is empty - return null
+    return nullptr;
+  if((node->value > anc1) && (node->value > anc2)){ //if both values are less than root - LCA must be to the left
+    return LCA(node->left, anc1, anc2);
+  }
+  if((node->value < anc1) && (node->value < anc2)){ //if both values are greater than root - LCA must be to the right
+    return LCA(node->right, anc1, anc2);
+  }
+
+  return node; //return LCA
+}
+
+// Main Execution --------------------------------------------------------------
+int main(int argc, char *argv[]) {
+  int N, val, P, anc1, anc2;
+  Node *anc;
+
+  cin >> N;
+  while(N != -1){
+    BST tree; //tree
+
+    for(int i = 0; i < N; i++){ //take in each node and insert in tree
+        cin >> val;
+        tree.insert(tree.root, val);
+    }
+
+    cin >> P;
+    for(int i = 0; i < P; i++){ //take in each pair and find LCA
+      cin >> anc1 >> anc2;
+      anc = tree.LCA(tree.root, anc1, anc2);
+      cout << anc->value << endl; //print LCA
+    }
+    cin >> N;
+    if(N != -1) //check if list will end on next loop for blank space
+      cout << endl;
+  }
+  return EXIT_SUCCESS;
+}
+
+// vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:
